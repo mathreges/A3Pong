@@ -1,25 +1,31 @@
-package cena;
-
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.Random;
 
 public class Bolinha {
+    private Random random = new Random();
+    private Cena cena;
     private float posX = 0.0f;
     private float posY = 0.0f;
     private float velX = 1.7f; // Velocidade na direção X
     private float velY = 1.7f; // Velocidade na direção Y
-
-    private Random random = new Random();
-
     public void desenharBolinha(GL2 gl, float radius, int stacks) {
+        this.cena = new Cena();
         GLUT glut = new GLUT();
 
-        gl.glColor3f(0, 1, 1);
+        gl.glTranslatef(posX, posX, 0);
+
+        gl.glColor3f(0,1,1);
 
         gl.glPushMatrix();
-        gl.glTranslatef(posX, posY, 0); // Translada para a posição atual
-        glut.glutSolidSphere(radius, 50, 50);
+        //gl.glRotated(ang, 0, 1, 1);
+            glut.glutSolidSphere(2, 50, 50);
         gl.glPopMatrix();
     }
 
@@ -44,6 +50,7 @@ public class Bolinha {
         if (posY - 2 < -104) {
             velY = -velY;
         }
-        System.out.println("Velocidade X: " + velX + ", VelocidadeY" + velY);
+        //System.out.println("Velocidade X: " + velX + ", VelocidadeY" + velY);
     }
+
 }

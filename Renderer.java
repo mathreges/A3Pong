@@ -6,14 +6,13 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.FPSAnimator;
 import java.awt.*;
 
-
 public class Renderer {
     private static GLWindow window = null;
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static int screenWidth = screenSize.width;
     public static int screenHeight = screenSize.height;
 
-    public static void init() {
+    public static void init(){
         GLProfile.initSingleton();
         GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities caps = new GLCapabilities(profile);
@@ -41,14 +40,7 @@ public class Renderer {
         });
     }
 
-
-
     public static void main(String[] args) {
         init();
     }
-
 }
-
-
-
-

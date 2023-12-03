@@ -1,5 +1,3 @@
-package cena;
-
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.opengl.GL2;
@@ -13,7 +11,7 @@ public class KeyBoard implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key pressed: " + e.getKeyCode());
+        //System.out.println("Key pressed: " + e.getKeyCode());
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
             System.exit(0);
 
@@ -21,8 +19,6 @@ public class KeyBoard implements KeyListener{
 
         switch (keyCode) {
             case KeyEvent.VK_LEFT:
-                System.out.println(cena.xDireita);
-                System.out.println(cena.xEsquerda);
                 if (cena.xDireita > -88){
                     cena.xDireita -= 8;
                     cena.xEsquerda -= 8;
@@ -30,8 +26,6 @@ public class KeyBoard implements KeyListener{
                 break;
 
             case KeyEvent.VK_RIGHT:
-                System.out.println(cena.xDireita);
-                System.out.println(cena.xEsquerda);
                 if (cena.xEsquerda < 88){
                     cena.xDireita += 8;
                     cena.xEsquerda += 8;

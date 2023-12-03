@@ -1,8 +1,7 @@
-package cena;
-
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Color;
@@ -12,14 +11,11 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class Cena implements GLEventListener{
-
-    public float xMin, xMax, yMin, yMax, zMin, zMax;
+    private float xMin, xMax, yMin, yMax, zMin, zMax;
     private TextRenderer textRenderer;
-
-    private Bolinha bolinha;
-
-    private Timer timer;
     public int op;
+    private Bolinha bolinha;
+    private Timer timer;
     public int pontos;
 
     //Dados do Quadrado
@@ -27,7 +23,7 @@ public class Cena implements GLEventListener{
 
     //dados da esfera
     public float radio;
-    public int stacks;
+    public int stacks, xBola, yBola;
 
     //Preenchimento
     public int mode;
@@ -39,12 +35,11 @@ public class Cena implements GLEventListener{
         xMax = yMax = zMax = 104;
 
         reset();
+
         textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 15));
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
-
         bolinha = new Bolinha();
-
 
         int delay = 16;
         ActionListener taskPerformer = e -> {
@@ -59,9 +54,18 @@ public class Cena implements GLEventListener{
 
         pontos = 0;
 
+        //Dados Quadrado
+        xDireita = 8;
+        xEsquerda = -8;
+
+        yCima = -96;
+        yBaixo = -100;
+
         //Dados Bola
         radio = 20;
         stacks = 10;
+        xBola = 0;
+        yBola = 0;
 
         mode = GL2.GL_FILL;
     }
@@ -79,15 +83,14 @@ public class Cena implements GLEventListener{
 
         String m = mode == GL2.GL_LINE ? "LINE" : "FILL";
 
-        desenhaTexto(gl, 96, 96, Color.BLACK, "Pontos: " + pontos);
+        desenhaTexto(gl, 0, (int) (Renderer.screenHeight*0.95), Color.BLACK, "Pontos: " + pontos);
 
         //Quadrado
         Retangulo retangulo = new Retangulo();
         retangulo.desenharQuadrado(gl, xDireita, xEsquerda, yCima, yBaixo);
 
         //Bola
-        bolinha.desenharBolinha(gl, 2, 2);
-
+        bolinha.desenharBolinha(gl, radio, stacks);
         gl.glFlush();
     }
 
