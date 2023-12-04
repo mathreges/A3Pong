@@ -1,11 +1,15 @@
 package cena;
 
+import com.jogamp.opengl.GLAutoDrawable;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuPong extends JFrame {
+
+    public GLAutoDrawable drawable;
 
     public MenuPong() {
         setTitle("Menu Pong");
@@ -34,7 +38,7 @@ public class MenuPong extends JFrame {
 
     private void iniciarJogo() {
         Renderer renderer = new Renderer();
-        Renderer.init();
+        renderer.init(drawable);
     }
 
     public static void main(String[] args) {
