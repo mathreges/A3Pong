@@ -14,23 +14,22 @@ public class Bolinha {
     public Random random = new Random();
     private Cena cena;
     private float posX = 0.0f;
-    private float posY = 0.0f;
+    private float posY = 0.0f;;
 
-    private float positiveVelX = 1.7f;
+    private float minimumVel;
 
     private float randomNumber;
-    private float quadranteSuperior;
-
-    private float positiveVelY = 1.7f;
-    private float velX = 1.7f; // Velocidade na direção X
-    private float velY = 1.7f; // Velocidade na direção Y
+    private float baseVel;
+    private float velX;
+    private float velY;
 
 
-    public void init() {
+    public void init(float velocidadeBase) {
         this.cena = new Cena();
-        this.quadranteSuperior = (float) (this.cena.getMaxScreen() - (this.cena.getMaxScreen() * 0.3));
 
-
+        baseVel = velocidadeBase;
+        minimumVel = baseVel * 0.6f;
+        velX = velY = baseVel;
     }
 
     public void desenharBolinha(GL2 gl, float radius, int stacks) {
@@ -51,40 +50,48 @@ public class Bolinha {
         posX += velX;
         posY += velY;
 
-        if (posX + 2 > this.cena.getMaxScreen() || posX - 2 < this.cena.getMinScreen()) {
+        if (posX + 4 > this.cena.getMaxScreen() || posX - 4 < this.cena.getMinScreen()) {
             velX = -velX;
         }
 
-        // Verifica colisão com o retângulo
         if (posX + 2 > retangulo.getxEsquerda() && posX - 2 < retangulo.getxDireita() &&
                 posY + 2 > retangulo.getyBaixo() && posY - 2 < retangulo.getyCima()) {
-            // Colisão com o retângulo, inverte a direção na vertical (Y)
+
+            if(posY + -retangulo.getyCima() >= -4 && posY + -retangulo.getyCima() < 0 &&
+              (posX + -retangulo.getxDireita() >= -4 && posX + -retangulo.getxDireita() < 0) ||
+              (posX + -retangulo.getxEsquerda() >= -4 && posX + -retangulo.getxEsquerda() < 0)) {
+                velX = -velX;
+                return;
+            }
+
+
             velY = -velY;
         }
 
-        if(posY + 2 > this.cena.getMaxScreen()) {
+        if(posY + 4 > this.cena.getMaxScreen()) {
             velY = getRandomVel(-velY);
         }
         if (posY - 2 < this.cena.getMinScreen()) {
-            velY = -velY;
+            velY = 0;
+            velX = 0;
+            // Aqui vai vir a função de perdeu e/ou zerou pontos/perdeu vida
         }
 
     }
 
 
     private float getRandomVel(float vel) {
-        randomNumber = random.nextFloat(this.positiveVelX);
+        randomNumber = random.nextFloat(baseVel);
         if(vel >= 0) {
             vel = randomNumber;
         } else if (vel < 0) {
             vel = -randomNumber;
         }
-        if(vel < 0.7f && vel > 0) {
-            vel = 1;
-        } else if (vel > -0.7f && vel < 0) {
-            vel = -1;
+        if(vel < minimumVel && vel > 0) {
+            vel = (baseVel * 0.75f);
+        } else if (vel > -minimumVel && vel < 0) {
+            vel = -(baseVel * 0.75f);
         }
-
         return vel;
     }
 

@@ -51,7 +51,8 @@ public class Cena implements GLEventListener{
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         bolinha = new Bolinha();
-        bolinha.init();
+
+        bolinha.init(1.7f);
 
         int delay = 16;
         ActionListener taskPerformer = e -> {
