@@ -8,7 +8,6 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.Color;
 import com.jogamp.newt.event.WindowAdapter;
@@ -22,11 +21,12 @@ public class Renderer implements GLEventListener {
     public static int screenWidth = screenSize.width;
     public static int screenHeight = screenSize.height;
     private TextRenderer textRenderer;
-    private static GLWindow window = null;
+    public static GLWindow window = null;
     private final float startButtonX = -0.2f;
     private final float startButtonY = 0.2f;
     private final float startButtonWidth = 0.4f;
     private final float startButtonHeight = 0.1f;
+    private static boolean verificarinicio = false;
 
 
     @Override
@@ -76,40 +76,49 @@ public class Renderer implements GLEventListener {
         window.addGLEventListener(renderer);
 
         window.addMouseListener(new MouseListener() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            float x = e.getX();
-            float y = e.getY();
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                float x = e.getX();
+                float y = e.getY();
 
-            float normalizedX = (2.0f * x) / window.getWidth() - 1.0f;
-            float normalizedY = 1.0f - (2.0f * y) / window.getHeight();
+                float normalizedX = (2.0f * x) / window.getWidth() - 1.0f;
+                float normalizedY = 1.0f - (2.0f * y) / window.getHeight();
 
-            if (normalizedX >= renderer.startButtonX && normalizedX <= renderer.startButtonX + renderer.startButtonWidth &&
-                    normalizedY >= renderer.startButtonY && normalizedY <= renderer.startButtonY + renderer.startButtonHeight) {
-                Cena cena = new Cena();
+                if (normalizedX >= renderer.startButtonX && normalizedX <= renderer.startButtonX + renderer.startButtonWidth &&
+                        normalizedY >= renderer.startButtonY && normalizedY <= renderer.startButtonY + renderer.startButtonHeight &&
+                            renderer.verificarinicio == false) {
 
-                window.setTitle("Jogo Pong");
+                    renderer.verificarinicio = true;
 
-                window.addGLEventListener(cena);
-                window.addKeyListener(new KeyBoard(cena));
+                    Cena cena = new Cena();
+
+                    window.setTitle("Jogo Pong");
+
+                    window.addGLEventListener(cena);
+                    window.addKeyListener(new KeyBoard(cena));
+
+
+                } else if (normalizedX >= -0.5f && normalizedX <= 0.5f &&
+                        normalizedY >= -0.5f && normalizedY <= 0.5f && renderer.verificarinicio == false) {
+                            System.exit(0);
+                }
             }
-        }
 
-        public void mouseWheelMoved(MouseEvent e) {
-        }
-        @Override
-        public void mouseMoved(MouseEvent e) {
-        }
-        public void mouseDragged(MouseEvent e) {
-        }
-        @Override
-        public void mouseEntered(MouseEvent e) {}
-        @Override
-        public void mouseExited(MouseEvent e) {}
-        @Override
-        public void mousePressed(MouseEvent e) {}
-        @Override
-        public void mouseReleased(MouseEvent e) {}
+            public void mouseWheelMoved(MouseEvent e) {
+            }
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
+            public void mouseDragged(MouseEvent e) {
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
         });
 
         window.setVisible(true);
@@ -127,9 +136,9 @@ public class Renderer implements GLEventListener {
     public void Instrucoes(GL2 gl, int xPosicao, int yPosicao, Color cor){
         String instructions = "Instruções: \n" +
                 " -Movimente o bastão através das setas do teclado <—  —>\n" +
-                " -Start - utilize a tecla …\n" +
-                " -Pause - utilize a tecla …\n" +
-                " -Stop - utilize a tecla …\n" +
+                " -Start - utilize a tecla 'Enter'\n" +
+                " -Pause - utilize a tecla 'P'\n" +
+                " -Stop - utilize a tecla 'S'\n" +
                 "\n" +
                 " -Regras do jogo:\n" +
                 "  -Você possui 5 vidas e a cada vez que não rebater a bola uma delas será perdida.\n" +

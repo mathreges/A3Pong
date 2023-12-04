@@ -6,7 +6,6 @@ import com.jogamp.opengl.GL2;
 
 public class KeyBoard implements KeyListener{
     private Cena cena;
-
     public KeyBoard(Cena cena){
         this.cena = cena;
     }
@@ -14,6 +13,7 @@ public class KeyBoard implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e) {
         //System.out.println("Key pressed: " + e.getKeyCode());
+
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
             System.exit(0);
 
@@ -33,8 +33,20 @@ public class KeyBoard implements KeyListener{
                     cena.xEsquerda += 8;
                 }
                 break;
+
+            case KeyEvent.VK_P:
+                cena.status = 1;
+                break;
+
+            case KeyEvent.VK_ENTER:
+                cena.status = 0;
+                break;
+
+            case KeyEvent.VK_S:
+                cena.status = 2;
+                break;
         }
-        }
+    }
 
     @Override
     public void keyReleased(KeyEvent e) { }
