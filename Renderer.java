@@ -35,6 +35,8 @@ public class Renderer implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable drawable) {
+        textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 15));
+
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
         GLUT glut = new GLUT();
@@ -49,6 +51,8 @@ public class Renderer implements GLEventListener {
 
         gl.glRasterPos2f(-0.2f, 0.0f);
         glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "Sair");
+
+        Instrucoes(gl, 700, 400, Color.WHITE);
     }
 
     public static void main(String[] args) {
@@ -66,8 +70,8 @@ public class Renderer implements GLEventListener {
         window.setResizable(false);
         window.setVisible(true);
 
-        final Renderer Renderer = new Renderer();
-        window.addGLEventListener(Renderer);
+        final Renderer renderer = new Renderer();
+        window.addGLEventListener(renderer);
 
         window.addMouseListener(new MouseListener() {
         @Override
@@ -78,8 +82,8 @@ public class Renderer implements GLEventListener {
             float normalizedX = (2.0f * x) / window.getWidth() - 1.0f;
             float normalizedY = 1.0f - (2.0f * y) / window.getHeight();
 
-            if (normalizedX >= Renderer.startButtonX && normalizedX <= Renderer.startButtonX + Renderer.startButtonWidth &&
-                    normalizedY >= Renderer.startButtonY && normalizedY <= Renderer.startButtonY + Renderer.startButtonHeight) {
+            if (normalizedX >= renderer.startButtonX && normalizedX <= renderer.startButtonX + renderer.startButtonWidth &&
+                    normalizedY >= renderer.startButtonY && normalizedY <= renderer.startButtonY + renderer.startButtonHeight) {
                 Cena cena = new Cena();
 
                 window.setTitle("Jogo Pong");
@@ -118,14 +122,31 @@ public class Renderer implements GLEventListener {
             }
         });
     }
-    public void desenhaTexto(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
+    public void Instrucoes(GL2 gl, int xPosicao, int yPosicao, Color cor){
+        String instructions = "Instruções: \n" +
+                " -Movimente o bastão através das setas do teclado <—  —>\n" +
+                " -Start - utilize a tecla …\n" +
+                " -Pause - utilize a tecla …\n" +
+                " -Stop - utilize a tecla …\n" +
+                "\n" +
+                " -Regras do jogo:\n" +
+                "  -Você possui 5 vidas e a cada vez que não rebater a bola uma delas será perdida.\n" +
+                "  -Ao atingir 200 pontos você passará para 2ª fase e o nível de dificuldade será aumentado.\n" +
+                "  -Ao perder todas as vidas você perde o jogo.";
+        String[] lines = instructions.split("\n");
 
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
         textRenderer.beginRendering(Renderer.screenWidth, Renderer.screenHeight);
         textRenderer.setColor(cor);
-        textRenderer.draw(frase, xPosicao, yPosicao);
+
+        for (String line : lines) {
+            textRenderer.draw(line, xPosicao, yPosicao);
+            yPosicao -= 20;
+        }
+
         textRenderer.endRendering();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+
     }
 
     @Override
