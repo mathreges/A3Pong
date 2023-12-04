@@ -1,3 +1,5 @@
+package cena;
+
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
@@ -9,17 +11,32 @@ import java.awt.Font;
 import java.util.Random;
 
 public class Bolinha {
-    private Random random = new Random();
+    public Random random = new Random();
     private Cena cena;
     private float posX = 0.0f;
     private float posY = 0.0f;
+
+    private float positiveVelX = 1.7f;
+
+    private float randomNumber;
+    private float quadranteSuperior;
+
+    private float positiveVelY = 1.7f;
     private float velX = 1.7f; // Velocidade na direção X
     private float velY = 1.7f; // Velocidade na direção Y
-    public void desenharBolinha(GL2 gl, float radius, int stacks) {
+
+
+    public void init() {
         this.cena = new Cena();
+        this.quadranteSuperior = (float) (this.cena.getMaxScreen() - (this.cena.getMaxScreen() * 0.3));
+
+
+    }
+
+    public void desenharBolinha(GL2 gl, float radius, int stacks) {
         GLUT glut = new GLUT();
 
-        gl.glTranslatef(posX, posX, 0);
+        gl.glTranslatef(posX, posY, 0);
 
         gl.glColor3f(0,1,1);
 
@@ -29,28 +46,46 @@ public class Bolinha {
         gl.glPopMatrix();
     }
 
-    public void atualizar() {
-        // Atualiza a posição com base na velocidade
+    public void atualizar(Retangulo retangulo) {
+
         posX += velX;
         posY += velY;
 
-        // Verifica limites da tela e inverte a direção se atingir o limite
-        if (posX + 2 > 104 || posX - 2 < -104) {
+        if (posX + 2 > this.cena.getMaxScreen() || posX - 2 < this.cena.getMinScreen()) {
             velX = -velX;
         }
-        if (posY + 2 > 104) {
-            velY = -velY;
-            velY = (random.nextFloat() - 1) * 1.7f; // Valor aleatório entre -1 e 1 para a direção X
-            if(velY < 0.7f && velY > 0) {
-                velY = 1;
-            } else if (velY > -0.7f && velY < 0) {
-                velY = -1;
-            }
-        }
-        if (posY - 2 < -104) {
+
+        // Verifica colisão com o retângulo
+        if (posX + 2 > retangulo.getxEsquerda() && posX - 2 < retangulo.getxDireita() &&
+                posY + 2 > retangulo.getyBaixo() && posY - 2 < retangulo.getyCima()) {
+            // Colisão com o retângulo, inverte a direção na vertical (Y)
             velY = -velY;
         }
-        //System.out.println("Velocidade X: " + velX + ", VelocidadeY" + velY);
+
+        if(posY + 2 > this.cena.getMaxScreen()) {
+            velY = getRandomVel(-velY);
+        }
+        if (posY - 2 < this.cena.getMinScreen()) {
+            velY = -velY;
+        }
+
+    }
+
+
+    private float getRandomVel(float vel) {
+        randomNumber = random.nextFloat(this.positiveVelX);
+        if(vel >= 0) {
+            vel = randomNumber;
+        } else if (vel < 0) {
+            vel = -randomNumber;
+        }
+        if(vel < 0.7f && vel > 0) {
+            vel = 1;
+        } else if (vel > -0.7f && vel < 0) {
+            vel = -1;
+        }
+
+        return vel;
     }
 
 }

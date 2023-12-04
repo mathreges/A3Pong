@@ -1,10 +1,22 @@
+package cena;
+
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 
 public class Retangulo {
-    public void desenharQuadrado(GL2 gl, int xDireita, int xEsquerda, int yCima, int yBaixo) {
+    public int xDireita;
+    public int xEsquerda;
+    public int yCima;
+    public int yBaixo;
+
+    public void desenharRetangulo(GL2 gl, int xDir, int xEsq, int yCim, int yBaix) {
+
+        xDireita = xDir;
+        xEsquerda = xEsq;
+        yCima = yCim;
+        yBaixo = yBaix;
 
         gl.glColor3f(0,0,1);
 
@@ -14,5 +26,30 @@ public class Retangulo {
             gl.glVertex2f(xEsquerda, yBaixo);
             gl.glVertex2f(xEsquerda, yCima);
         gl.glEnd();
+    }
+
+
+    public void reset(){
+        xDireita = 8;
+        xEsquerda = -8;
+
+        yCima = -96;
+        yBaixo = -100;
+    }
+
+    public int getxDireita() {
+        return xDireita;
+    }
+
+    public int getxEsquerda() {
+        return xEsquerda;
+    }
+
+    public int getyBaixo() {
+        return yBaixo;
+    }
+
+    public int getyCima() {
+        return yCima;
     }
 }

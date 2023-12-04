@@ -1,3 +1,5 @@
+package cena;
+
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
@@ -18,6 +20,12 @@ public class Cena implements GLEventListener{
     private Timer timer;
     public int pontos;
 
+    public Retangulo retangulo;
+
+    private int minScreen = -104;
+
+    private int maxScreen = 104;
+
     //Dados do Quadrado
     public int xDireita, xEsquerda, yCima, yBaixo;
 
@@ -31,23 +39,35 @@ public class Cena implements GLEventListener{
     @Override
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        xMin = yMin = zMin = -104;
-        xMax = yMax = zMax = 104;
+        xMin = yMin = zMin = this.minScreen;
+        xMax = yMax = zMax = this.maxScreen;
+
+        retangulo = new Retangulo();
 
         reset();
+        retangulo.reset();
 
         textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 15));
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         bolinha = new Bolinha();
+        bolinha.init();
 
         int delay = 16;
         ActionListener taskPerformer = e -> {
-            bolinha.atualizar();
+            bolinha.atualizar(retangulo);
             drawable.display();
         };
         timer = new Timer(delay, taskPerformer);
         timer.start();
+    }
+
+    public int getMinScreen() {
+        return this.minScreen;
+    }
+
+    public int getMaxScreen() {
+        return this.maxScreen;
     }
 
     public void reset(){
@@ -85,9 +105,8 @@ public class Cena implements GLEventListener{
 
         desenhaTexto(gl, 0, (int) (Renderer.screenHeight*0.95), Color.BLACK, "Pontos: " + pontos);
 
-        //Quadrado
-        Retangulo retangulo = new Retangulo();
-        retangulo.desenharQuadrado(gl, xDireita, xEsquerda, yCima, yBaixo);
+        //Retangulo
+        retangulo.desenharRetangulo(gl, xDireita, xEsquerda, yCima, yBaixo);
 
         //Bola
         bolinha.desenharBolinha(gl, radio, stacks);
