@@ -22,8 +22,8 @@ public class Renderer implements GLEventListener {
     public static int screenHeight = screenSize.height;
     private TextRenderer textRenderer;
     public static GLWindow window = null;
-    private final float startButtonX = -0.2f;
-    private final float startButtonY = 0.2f;
+    private final float startButtonX = -0.5f;
+    private final float startButtonY = -0.5f;
     private final float startButtonWidth = 0.4f;
     private final float startButtonHeight = 0.1f;
     private static boolean verificarinicio = false;
@@ -32,30 +32,31 @@ public class Renderer implements GLEventListener {
     @Override
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        gl.glClearColor(0.32549019607f, 0.54509803921f, 0.92549019607f, 1.0f);
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
-        textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 15));
+        textRenderer = new TextRenderer(new Font("Arial", Font.BOLD, 20));
 
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
         GLUT glut = new GLUT();
 
         gl.glLoadIdentity();
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
+        gl.glColor3f(0.0f, 0.0f, 1.0f);
 
         gl.glLoadIdentity();
         gl.glColor3f(1.0f, 1.0f, 1.0f);
         gl.glRasterPos2f(startButtonX, startButtonY);
         glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "Início");
 
-        gl.glRasterPos2f(-0.2f, 0.0f);
+        gl.glRasterPos2f(0.5f, -0.5f);
         glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "Sair");
 
         Instrucoes(gl, 700, 400, Color.WHITE);
     }
+
 
     public static void main(String[] args) {
         GLProfile.initSingleton();
@@ -86,13 +87,13 @@ public class Renderer implements GLEventListener {
 
                 if (normalizedX >= renderer.startButtonX && normalizedX <= renderer.startButtonX + renderer.startButtonWidth &&
                         normalizedY >= renderer.startButtonY && normalizedY <= renderer.startButtonY + renderer.startButtonHeight &&
-                            renderer.verificarinicio == false) {
+                        renderer.verificarinicio == false) {
 
                     renderer.verificarinicio = true;
 
                     Cena cena = new Cena();
 
-                    window.setTitle("Jogo Pong");
+                    window.setTitle("PONG");
 
                     window.addGLEventListener(cena);
                     window.addKeyListener(new KeyBoard(cena));
@@ -100,7 +101,7 @@ public class Renderer implements GLEventListener {
 
                 } else if (normalizedX >= -0.5f && normalizedX <= 0.5f &&
                         normalizedY >= -0.5f && normalizedY <= 0.5f && renderer.verificarinicio == false) {
-                            System.exit(0);
+                    System.exit(0);
                 }
             }
 
@@ -133,32 +134,53 @@ public class Renderer implements GLEventListener {
             }
         });
     }
-    public void Instrucoes(GL2 gl, int xPosicao, int yPosicao, Color cor){
+    public void Instrucoes(GL2 gl, int screenWidth, int screenHeight, Color cor) {
+        String title = "SÓ PONG"; // Título na parte superior
         String instructions = "Instruções: \n" +
                 " -Movimente o bastão através das setas do teclado <—  —>\n" +
-                " -Start - utilize a tecla 'Enter'\n" +
                 " -Pause - utilize a tecla 'P'\n" +
+                " -Start - utilize a tecla 'Enter'\n" +
                 " -Stop - utilize a tecla 'S'\n" +
                 "\n" +
-                " -Regras do jogo:\n" +
-                "  -Você possui 5 vidas e a cada vez que não rebater a bola uma delas será perdida.\n" +
+                " Regras do jogo:\n" +
+                "  -Você possui 5 vidas e a cada vez que não rebater a bola, uma delas será perdida.\n" +
                 "  -Ao atingir 200 pontos você passará para 2ª fase e o nível de dificuldade será aumentado.\n" +
-                "  -Ao perder todas as vidas você perde o jogo.";
+                "  -Ao perder todas, as vidas você perde o jogo.";
         String[] lines = instructions.split("\n");
 
+        TextRenderer titleRenderer = new TextRenderer(new Font("Arial", Font.BOLD, 24));
+        TextRenderer textRenderer = new TextRenderer(new Font("Arial", Font.PLAIN, 12));
+
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-        textRenderer.beginRendering(Renderer.screenWidth, Renderer.screenHeight);
-        textRenderer.setColor(cor);
+        titleRenderer.beginRendering(screenWidth, screenHeight);
+        titleRenderer.setColor(Color.WHITE); // Define a cor do título como branco
+
+        double titleWidth = titleRenderer.getBounds(title).getWidth();
+        double titleX = (screenWidth - titleWidth) / 2.0;
+        int titleY = screenHeight - 40; // Posição vertical do título
+
+        titleRenderer.draw((CharSequence) title, (int) titleX, titleY);
+        titleRenderer.endRendering();
+
+        int textY = titleY - 30; // Ajuste para a altura do texto
+
+        textRenderer.beginRendering(screenWidth, screenHeight);
+        textRenderer.setColor(Color.BLACK); // Define a cor do texto como preto
 
         for (String line : lines) {
-            textRenderer.draw(line, xPosicao, yPosicao);
-            yPosicao -= 20;
+            double lineWidth = textRenderer.getBounds(line).getWidth();
+            double startX = (screenWidth - lineWidth) / 2; // Centraliza horizontalmente
+
+            textRenderer.draw((CharSequence) line, (int) startX, textY);
+            textY -= 20; // Espaçamento entre linhas
         }
 
         textRenderer.endRendering();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-
     }
+
+
+
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
