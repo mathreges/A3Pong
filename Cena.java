@@ -67,7 +67,7 @@ public class Cena implements GLEventListener{
 
         bolinha = new Bolinha();
 
-        bolinha.init(1.7f, jogador, statusjogo, this);
+        bolinha.init(1.5f, jogador, statusjogo, this);
 
         int delay = 16;
         ActionListener taskPerformer = e -> {

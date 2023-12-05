@@ -13,7 +13,6 @@ public class Bolinha {
     private float posY = 0.0f;;
     private float minimumVel;
     private float randomNumber;
-    public DecimalFormat formatar = new DecimalFormat("0.00");
     private Cena cenaAtual;
     private Jogador jogadorAtual;
     private StatusJogo statusJogo;
@@ -66,7 +65,8 @@ public class Bolinha {
             }
         }
 
-        if(posY + 4 > cenaAtual.getMaxScreen()) {
+        if(posY + 4 > cenaAtual.getMaxScreen() && velY > 0) {
+            System.out.println("posY" + posY + "\n\t VelY " + velY);
             velY = getRandomVel(-velY);
         }
 
@@ -75,10 +75,10 @@ public class Bolinha {
             velX = 0;
             jogadorAtual.atualizarVida();
             if(jogadorAtual.fase == 2) {
-                cenaAtual.renovarBolinha(4f);
+                cenaAtual.renovarBolinha(2.7f);
                 return;
             }
-            cenaAtual.renovarBolinha(1.7f);
+            cenaAtual.renovarBolinha(1.5f);
         }
     }
     private float getRandomVel(float vel) {
