@@ -2,6 +2,8 @@ package cena;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.gl2.GLUT;
+
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class Bolinha {
@@ -11,14 +13,20 @@ public class Bolinha {
     private float posY = 0.0f;;
     private float minimumVel;
     private float randomNumber;
+    public DecimalFormat formatar = new DecimalFormat("0.00");
+    private Cena cenaAtual;
+    private Jogador jogadorAtual;
+    private StatusJogo statusJogo;
     private float baseVel;
     private float velX;
     private float velY;
 
-    public void init(float velocidadeBase) {
-
+    public void init(float velocidadeBase, Jogador jogador, StatusJogo statusjogo, Cena cena) {
+        this.statusJogo = statusJogo;
+        this.jogadorAtual = jogador;
+        this.cenaAtual = cena;
         baseVel = velocidadeBase;
-        minimumVel = baseVel * 0.2f;
+        minimumVel = baseVel * 0.5f;
         velX = velY = baseVel;
     }
 
@@ -34,12 +42,14 @@ public class Bolinha {
         gl.glPopMatrix();
     }
 
-    public String atualizar(Retangulo retangulo) {
-        cena = new Cena();
+    public void atualizar(Retangulo retangulo) {
+        if (baseVel == 0) {
+            return;
+        }
         posX += velX;
         posY += velY;
 
-        if (posX + 4 > cena.getMaxScreen() || posX - 4 < cena.getMinScreen()) {
+        if (posX + 4 > cenaAtual.getMaxScreen() || posX - 4 < cenaAtual.getMinScreen()) {
             velX = -velX;
         }
 
@@ -50,23 +60,26 @@ public class Bolinha {
                     (posX + -retangulo.getxDireita() >= -4 && posX + -retangulo.getxDireita() < 0) ||
                     (posX + -retangulo.getxEsquerda() >= -4 && posX + -retangulo.getxEsquerda() < 0)) {
                 velX = -velX;
-                return "ponto";
+            } else {
+                velY = -velY;
+                jogadorAtual.atualizarPontos();
             }
-            velY = -velY;
-            return "ponto";
         }
 
-        if(posY + 4 > cena.getMaxScreen()) {
+        if(posY + 4 > cenaAtual.getMaxScreen()) {
             velY = getRandomVel(-velY);
         }
 
-        if (posY - 2 < cena.getMinScreen()) {
+        if (posY - 2 < cenaAtual.getMinScreen()) {
             velY = 0;
             velX = 0;
-            // Aqui vai vir a função de perdeu e/ou zerou pontos/perdeu vida
-            return "vida";
+            jogadorAtual.atualizarVida();
+            if(jogadorAtual.fase == 2) {
+                cenaAtual.renovarBolinha(4f);
+                return;
+            }
+            cenaAtual.renovarBolinha(1.7f);
         }
-        return "iniciar";
     }
     private float getRandomVel(float vel) {
         randomNumber = random.nextFloat(baseVel);
@@ -75,7 +88,7 @@ public class Bolinha {
         } else if (vel < 0) {
             vel = -randomNumber;
         }
-        if(vel < minimumVel && vel > 0) {
+        if(vel <= minimumVel && vel > 0) {
             vel = (baseVel * 0.75f);
         } else if (vel > -minimumVel && vel < 0) {
             vel = -(baseVel * 0.75f);

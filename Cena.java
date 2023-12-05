@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.text.DecimalFormat;
 
 public class Cena implements GLEventListener{
     private float xMin, xMax, yMin, yMax, zMin, zMax;
@@ -56,6 +57,8 @@ public class Cena implements GLEventListener{
         statusjogo = new StatusJogo();
         renderer = new Renderer();
 
+        jogador.init(this);
+
         reset();
         retangulo.reset();
 
@@ -64,69 +67,67 @@ public class Cena implements GLEventListener{
 
         bolinha = new Bolinha();
 
-        bolinha.init(1.7f);
+        bolinha.init(1.7f, jogador, statusjogo, this);
 
         int delay = 16;
         ActionListener taskPerformer = e -> {
-
-            if (vidas == 0){
-                statusjogo.status = 4;
-                System.out.println(statusjogo.status);
-            }
-
-            statusjogo.status = status;
-
-            if (statusjogo.status() == "iniciar") {
-                if(bolinha.atualizar(retangulo) == "vida"){
-                    status = 3;
-                } else if (bolinha.atualizar(retangulo) == "ponto") {
-                    pontos += 5;
-                    status = 0;
-                }
-                drawable.display();
-            } else if (statusjogo.status() == "pausar") {
-                //pausa o jogo
-            } else if (statusjogo.status() == "parar") {
-                reset();
-                retangulo.reset();
-
-                bolinha = new Bolinha();
-                bolinha.init(1.7f);
-
-                status = 0;
-
-                if (!timer.isRunning()) {
-                    timer.restart();
-                }
-            } else if (statusjogo.status() == "vida"){
-
-                retangulo.reset();
-
-                bolinha = new Bolinha();
-                bolinha.init(1.7f);
-
-                vidas -= 1;
-                jogador.vida = vidas;
-                status = 0;
-            } else if (statusjogo.status() == "perdeu") {
-
-                reset();
-                retangulo.reset();
-
-                bolinha = new Bolinha();
-                bolinha.init(1.7f);
-
-                desenhaTexto(gl, 20, 580, Color.BLACK ,"VOCÊ PERDEU!");
-
-                status = 2;
-
-                if (!timer.isRunning()) {
-                    timer.restart();
-                }
-            }
+            drawable.display();
+            updateStatus(gl);
+            bolinha.atualizar(retangulo);
         };
         timer = new Timer(delay, taskPerformer);
         timer.start();
+    }
+
+    public void renovarBolinha(float velocidadeBase) {
+        bolinha = new Bolinha();
+        bolinha.init(velocidadeBase, jogador, statusjogo, this);
+    }
+
+    public void trocarDeFase() {
+        jogador.pontos = 0;
+        renovarBolinha(2.7f);
+        jogador.setVida(5);
+        jogador.setFase(2);
+    }
+
+    public void updateStatus(GL2 gl) {
+        if (vidas == 0){
+            statusjogo.status = 4;
+            System.out.println(statusjogo.status);
+        }
+
+        statusjogo.status = status;
+
+
+        if (statusjogo.status() == "pausar") {
+            //pausa o jogo
+        } else if (statusjogo.status() == "parar") {
+            reset();
+            retangulo.reset();
+
+            bolinha = new Bolinha();
+            bolinha.init(1.7f, jogador, statusjogo, this);
+
+            status = 0;
+
+            if (!timer.isRunning()) {
+                timer.restart();
+            }
+        } else if (jogador.getVidas() <= 0) {
+
+            reset();
+            retangulo.reset();
+
+            renovarBolinha(0);
+//            desenhaTexto(gl, (int) (renderer.screenWidth*0.5), (int) (renderer.screenHeight*0.5), Color.BLACK, "VOCÊ PERDEU!");
+
+            status = 2;
+
+            if (!timer.isRunning()) {
+                timer.restart();
+            }
+        }
     }
 
     public int getMinScreen() {
@@ -147,16 +148,14 @@ public class Cena implements GLEventListener{
 
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
 
-        desenhaTexto(gl, 0, (int) (Renderer.screenHeight*0.95), Color.BLACK, "Pontos: " + pontos);
+        desenhaTexto(gl, 0, (int) (Renderer.screenHeight*0.95), Color.BLACK, "Pontos: " + jogador.pontos);
         desenhaTexto(gl, 0, (int) (Renderer.screenHeight*0.91), Color.BLACK, "Vidas: ");
 
         //Retangulo
         retangulo.desenharRetangulo(gl, xDireita, xEsquerda, yCima, yBaixo);
 
-        jogador.vida = vidas;
-
         //Vida
-        for(i = 0; i < jogador.atualizarVida(); i++) {
+        for(i = 0; i < jogador.getVidas(); i++) {
             gl.glPushMatrix();
             gl.glTranslatef(xVida + (i * 6.5f), yVida, 0);
             jogador.desenharVida(gl);
