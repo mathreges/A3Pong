@@ -28,7 +28,7 @@ public class Jogador {
     }
 
     public int atualizarPontos (GLAutoDrawable drawable) {
-        pontos += 200;
+        pontos += 40;
         if (pontos >= 200 && fase == 1) {
             cenaAtual.trocarDeFase(drawable);
         }

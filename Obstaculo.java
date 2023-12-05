@@ -15,11 +15,9 @@ public class Obstaculo {
 
         reset();
 
-        gl.glClearColor(0.32549019607f, 0.54509803921f, 0.92549019607f, 1.0f);
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-        gl.glLoadIdentity();
-
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+
+        gl.glColor3f(1, 1, 1);
 
         gl.glBegin(GL2.GL_QUADS);
             gl.glVertex2f(xEsquerda, yBaixo);

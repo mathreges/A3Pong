@@ -155,14 +155,13 @@ public class Cena implements GLEventListener{
 
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
 
-        desenhafundo(gl);
-
         if (jogador.fase == 2) {
             gl.glPushMatrix();
             obstaculo.desenharObstaculo(drawable);
             gl.glPopMatrix();
         }
 
+        desenhafundo(gl);
 
         valor = statusjogo.status();
 
