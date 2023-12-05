@@ -8,7 +8,7 @@ import java.util.Random;
 public class Bolinha {
     public Random random = new Random();
     private Cena cena;
-    private float posX = 0.0f;
+    private float posX = -1.5f;
     private float posY = 50.0f;;
     private float minimumVel;
     private float randomNumber;
@@ -48,8 +48,8 @@ public class Bolinha {
             if (posX + 2 > obstaculo.getxEsquerda() && posX - 2 < obstaculo.getxDireita() &&
                     posY + 2 > obstaculo.getyBaixo() && posY - 2 < obstaculo.getyCima()) {
 
-                if((posX + -obstaculo.getxDireita() >= -4 && posX + -obstaculo.getxDireita() < 0) ||
-                        (posX + -obstaculo.getxEsquerda() >= -4 && posX + -obstaculo.getxEsquerda() < 0)) {
+                if((posX + -obstaculo.getxDireita() >= -4 && posX + -obstaculo.getxDireita() < 4) ||
+                   (posX + -obstaculo.getxEsquerda() >= -4 && posX + -obstaculo.getxEsquerda() < 4)) {
                     velX = -velX;
                 } else {
                     velY = -velY;
@@ -74,7 +74,9 @@ public class Bolinha {
                     (posX + -retangulo.getxDireita() >= -4 && posX + -retangulo.getxDireita() < 0) ||
                     (posX + -retangulo.getxEsquerda() >= -4 && posX + -retangulo.getxEsquerda() < 0)) {
                 velX = -velX;
-            } else {
+            }
+
+            if(velY < 0){
                 velY = -velY;
                 jogadorAtual.atualizarPontos(drawable);
             }
