@@ -1,6 +1,7 @@
 package cena;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Jogador {
@@ -16,9 +17,9 @@ public class Jogador {
     public void desenharVida(GL2 gl) {
         GLUT glut = new GLUT();
 
-        gl.glColor3f(0, 0, 0);
+        gl.glColor3f(1, 1, 0);
         gl.glRotated(0, 0, 1, 1);
-            glut.glutSolidTeapot(2);
+        glut.glutSolidTorus(0.2, 1.2f, 50, 50);
         gl.glEnd();
     }
     public int atualizarVida () {
@@ -26,10 +27,10 @@ public class Jogador {
         return vida;
     }
 
-    public int atualizarPontos () {
-        pontos += 40;
+    public int atualizarPontos (GLAutoDrawable drawable) {
+        pontos += 200;
         if (pontos >= 200 && fase == 1) {
-            cenaAtual.trocarDeFase();
+            cenaAtual.trocarDeFase(drawable);
         }
         return pontos;
     }

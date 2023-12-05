@@ -1,21 +1,21 @@
 package cena;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.gl2.GLUT;
-
-import java.text.DecimalFormat;
 import java.util.Random;
 
 public class Bolinha {
     public Random random = new Random();
     private Cena cena;
     private float posX = 0.0f;
-    private float posY = 0.0f;;
+    private float posY = 50.0f;;
     private float minimumVel;
     private float randomNumber;
     private Cena cenaAtual;
     private Jogador jogadorAtual;
     private StatusJogo statusJogo;
+    private Obstaculo obstaculo;
     private float baseVel;
     private float velX;
     private float velY;
@@ -24,6 +24,7 @@ public class Bolinha {
         this.statusJogo = statusJogo;
         this.jogadorAtual = jogador;
         this.cenaAtual = cena;
+        this.obstaculo = obstaculo;
         baseVel = velocidadeBase;
         minimumVel = baseVel * 0.5f;
         velX = velY = baseVel;
@@ -34,14 +35,28 @@ public class Bolinha {
 
         gl.glTranslatef(posX, posY, 0);
 
-        gl.glColor3f(0,1,1);
+        gl.glColor3f(1,1,1);
 
         gl.glPushMatrix();
         glut.glutSolidSphere(2, 50, 50);
         gl.glPopMatrix();
     }
 
-    public void atualizar(Retangulo retangulo) {
+    public void atualizar(Retangulo retangulo, Obstaculo obstaculo, GLAutoDrawable drawable) {
+
+        if (jogadorAtual.fase == 2){
+            if (posX + 2 > obstaculo.getxEsquerda() && posX - 2 < obstaculo.getxDireita() &&
+                    posY + 2 > obstaculo.getyBaixo() && posY - 2 < obstaculo.getyCima()) {
+
+                if((posX + -obstaculo.getxDireita() >= -4 && posX + -obstaculo.getxDireita() < 0) ||
+                        (posX + -obstaculo.getxEsquerda() >= -4 && posX + -obstaculo.getxEsquerda() < 0)) {
+                    velX = -velX;
+                } else {
+                    velY = -velY;
+                }
+            }
+        }
+
         if (baseVel == 0) {
             return;
         }
@@ -61,12 +76,11 @@ public class Bolinha {
                 velX = -velX;
             } else {
                 velY = -velY;
-                jogadorAtual.atualizarPontos();
+                jogadorAtual.atualizarPontos(drawable);
             }
         }
 
         if(posY + 4 > cenaAtual.getMaxScreen() && velY > 0) {
-            System.out.println("posY" + posY + "\n\t VelY " + velY);
             velY = getRandomVel(-velY);
         }
 

@@ -179,9 +179,6 @@ public class Renderer implements GLEventListener {
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     }
 
-
-
-
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }

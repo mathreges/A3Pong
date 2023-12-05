@@ -1,20 +1,18 @@
 package cena;
 
-import com.jogamp.newt.event.KeyEvent;
-
 public class StatusJogo {
     public int status;
     private String resultado;
     public String status() {
         switch (status) {
             case 0:
-                resultado = "iniciar";
+                resultado = "jogando";
                 break;
             case 1:
-                resultado = "pause";
+                resultado = "pausado";
                 break;
             case 2:
-                resultado = "parar";
+                resultado = "parado";
                 break;
             case 3:
                 resultado = "vida";
